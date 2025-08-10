@@ -6,7 +6,6 @@ set -euo pipefail
 
 SCRIPT_PATH="$(realpath "$0")"
 JOB_ID=4242
-SCHEDULE_LABEL="restic-30min"
 LOG_DIR="$HOME/.local/share/restic-android/logs"
 CREDENTIALS_FILE="$HOME/.config/restic-android.env"
 SOURCE_DIR="/storage/emulated/0"
@@ -52,7 +51,7 @@ monitor_conditions() {
 
 ensure_schedule() {
     local exists
-    exists=$(termux-job-scheduler --list 2>/dev/null | grep -F "$SCHEDULE_LABEL" || true)
+    exists=$(termux-job-scheduler -p 2>/dev/null | grep -F "Pending Job $JOB_ID" || true)
     if [ -z "$exists" ]; then
         termux-job-scheduler \
             --job-id "$JOB_ID" \
