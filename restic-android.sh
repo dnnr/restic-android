@@ -7,7 +7,7 @@ set -euo pipefail
 SCRIPT_PATH="$(realpath "$0")"
 JOB_ID=4242
 LOG_DIR="$HOME/.local/share/restic-android/logs"
-CREDENTIALS_FILE="$HOME/.config/restic-android.env"
+RESTIC_ENV_FILE="$HOME/.config/restic-android.env"
 SOURCE_DIR="/storage/emulated/0"
 RESTIC_CACHE_DIR="$PREFIX/var/cache/restic"
 
@@ -69,12 +69,12 @@ main() {
     ensure_log_and_reexec "$@"
     ensure_schedule
 
-    if [ ! -r "$CREDENTIALS_FILE" ]; then
-        echo "Credentials file not found: $CREDENTIALS_FILE" >&2
+    if [ ! -r "$RESTIC_ENV_FILE" ]; then
+        echo "Restic environment file not found: $RESTIC_ENV_FILE" >&2
         exit 1
     fi
     # shellcheck source=/dev/null
-    . "$CREDENTIALS_FILE"
+    . "$RESTIC_ENV_FILE"
 
     if ! is_wifi_connected; then
         echo "Not connected to Wi-Fi. Exiting." >&2
