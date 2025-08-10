@@ -16,7 +16,8 @@ ensure_log_and_reexec() {
     mkdir -p "$LOG_DIR"
     if [ "${RESTIC_BACKUP_LOGGING:-}" != "1" ]; then
         export RESTIC_BACKUP_LOGGING=1
-        local logfile="$LOG_DIR/backup_$(date +%Y%m%d_%H%M%S).log"
+        local logfile
+        logfile="$LOG_DIR/backup_$(date +%Y%m%d_%H%M%S).log"
         "$SCRIPT_PATH" "$@" 2>&1 | tee "$logfile"
         exit
     fi
