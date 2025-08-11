@@ -23,7 +23,7 @@ ensure_log_and_reexec() {
 }
 
 is_wifi_connected() {
-    termux-wifi-connectioninfo | jq -e '.connected == true' >/dev/null 2>&1
+    termux-wifi-connectioninfo | jq -e '.supplicant_state == "COMPLETED"' >/dev/null 2>&1
 }
 
 is_charging() {
