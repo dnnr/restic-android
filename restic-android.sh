@@ -14,6 +14,7 @@ JOB_ID=4242
 LOG_DIR="$HOME/.local/share/restic-android/logs"
 RESTIC_ENV_FILE="$HOME/.config/restic-android/env"
 SOURCE_DIR="/storage/emulated/0"
+EXCLUDE_FILE="$HOME/.config/restic-android/excludes"
 RESTIC_CACHE_DIR="$PREFIX/var/cache/restic"
 
 declare -a TERMUX_NOTIFICATIONS=()
@@ -168,7 +169,7 @@ main() {
       --title "restic" \
       --content "Running backup"
 
-    restic backup "$SOURCE_DIR" &
+    restic backup --exclude-caches --exclude-file "$EXCLUDE_FILE" "$SOURCE_DIR" &
     local restic_pid=$!
     monitor_conditions "$restic_pid"
     wait "$restic_pid"
