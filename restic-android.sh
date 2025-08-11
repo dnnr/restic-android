@@ -1,6 +1,11 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # Termux restic backup script
+#
+# Required tools:
+#   jq
+#   termux-api
+#   restic
 
 set -euo pipefail
 
