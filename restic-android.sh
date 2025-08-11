@@ -78,7 +78,7 @@ main() {
         echo "Restic environment file not found: $RESTIC_ENV_FILE" >&2
         exit 1
     fi
-    # shellcheck source=/dev/null
+    set -a  # Marks modified/created variables for export
     . "$RESTIC_ENV_FILE"
 
     if ! is_wifi_connected; then
