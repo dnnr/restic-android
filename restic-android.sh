@@ -11,7 +11,7 @@ set -euo pipefail
 
 SCRIPT_PATH="$(realpath "$0")"
 JOB_ID=4242
-LOG_DIR="$HOME/.local/share/restic-android/logs"
+LOG_DIR="/storage/emulated/0/ResticLogs/"
 RESTIC_ENV_FILE="$HOME/.config/restic-android/env"
 SOURCE_DIR="/storage/emulated/0"
 EXCLUDE_FILE="$HOME/.config/restic-android/excludes"
