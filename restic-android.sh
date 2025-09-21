@@ -62,6 +62,7 @@ ensure_schedule() {
     local exists
     exists=$(termux-job-scheduler -p 2>/dev/null | grep -F "Pending Job $JOB_ID" || true)
     if [ -z "$exists" ]; then
+        msg "Setting up periodic job"
         termux-job-scheduler \
             --job-id "$JOB_ID" \
             --period-ms 1800000 \
