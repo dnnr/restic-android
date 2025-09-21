@@ -18,7 +18,7 @@ EXCLUDE_FILE="$HOME/.config/restic-android/excludes"
 RESTIC_CACHE_DIR="$PREFIX/var/cache/restic"
 
 declare -a TERMUX_NOTIFICATIONS=()
-TERMUX_NOTIFICATION_ID="restic-${HOSTNAME}"
+TERMUX_NOTIFICATION_GROUP="restic-${HOSTNAME}"
 
 ensure_log_and_reexec() {
     mkdir -p "$LOG_DIR"
@@ -80,7 +80,7 @@ notify() {
     shift
     local id="$1"
     shift
-    local -a args=("--group" "${TERMUX_NOTIFICATION_ID}")
+    local -a args=("--group" "${TERMUX_NOTIFICATION_GROUP}")
     if [ -n "$id" ]; then
         args+=("--id" "$id")
     fi
