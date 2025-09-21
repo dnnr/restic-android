@@ -93,7 +93,7 @@ notify() {
 }
 
 msg() {
-    echo "***" "$@"
+    echo "*** $(date --iso-8601=seconds): " "$@"
 }
 
 info() {
