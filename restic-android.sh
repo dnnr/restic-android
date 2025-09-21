@@ -43,13 +43,13 @@ monitor_conditions() {
     while kill -0 "$pid" 2>/dev/null; do
         sleep 15
         if ! is_wifi_connected; then
-            echo "Wi-Fi disconnected, aborting backup" >&2
+            warn "Wi-Fi disconnected, aborting backup" >&2
             kill "$pid"
             wait "$pid" 2>/dev/null
             exit 1
         fi
         if ! is_charging; then
-            echo "Charger disconnected, aborting backup" >&2
+            warn "Charger disconnected, aborting backup" >&2
             kill "$pid"
             wait "$pid" 2>/dev/null
             exit 1
