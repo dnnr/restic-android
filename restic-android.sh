@@ -17,7 +17,6 @@ SOURCE_DIR="/storage/emulated/0"
 EXCLUDE_FILE="$HOME/.config/restic-android/excludes"
 RESTIC_CACHE_DIR="$PREFIX/var/cache/restic"
 
-declare -a TERMUX_NOTIFICATIONS=()
 TERMUX_NOTIFICATION_GROUP="restic-${HOSTNAME}"
 
 ensure_log_and_reexec() {
@@ -76,8 +75,6 @@ ensure_schedule() {
 }
 
 notify() {
-    local persist=$1
-    shift
     local id="$1"
     shift
     local -a args=("--group" "${TERMUX_NOTIFICATION_GROUP}")
@@ -85,11 +82,7 @@ notify() {
         args+=("--id" "$id")
     fi
 
-    if termux-notification "${args[@]}" "$@"; then
-        if [ "$persist" -eq 0 ]; then
-            TERMUX_NOTIFICATIONS+=("$id")
-        fi
-    fi
+    termux-notification "${args[@]}" "$@"
 }
 
 msg() {
@@ -104,7 +97,7 @@ info() {
 warn() {
     msg "WARN:" "$@"
     echo "Warning:" "$@" | \
-        notify 1 "" \
+        notify "" \
         --title "restic" \
         --alert-once \
         --priority low
@@ -113,24 +106,26 @@ warn() {
 fatal() {
     msg "ERROR:" "$@"
     echo "Error:" "$@" | \
-        notify 1 "" \
+        notify "" \
         --title "restic" \
         --alert-once \
         --priority high
     exit 1
 }
 
+# Register this before taking a wake lock and before posting progress notifications
 cleanup() {
-    for notification in "${TERMUX_NOTIFICATIONS[@]}"; do
-        termux-notification-remove "$notification"
-    done
+    # Clear progress notifications
+    termux-notification-remove progress
+
+    msg "Releasing Android wake lock"
     termux-wake-unlock
 }
 
 register_exit_cleanup() {
     trap "cleanup" EXIT
     termux-wake-lock
-    notify 0 progress \
+    notify progress \
         --alert-once \
         --ongoing \
         --priority low \
@@ -168,7 +163,7 @@ main() {
     register_exit_cleanup
 
     termux-wake-lock
-    notify 0 progress \
+    notify progress \
       --alert-once \
       --ongoing \
       --priority low \
