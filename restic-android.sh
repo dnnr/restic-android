@@ -12,6 +12,7 @@ set -euo pipefail
 SCRIPT_PATH="$(realpath "$0")"
 JOB_ID=4242
 LOG_DIR="/storage/emulated/0/ResticLogs/"
+LOCK_FILE="$HOME/.local/share/restic-android/lock"
 RESTIC_ENV_FILE="$HOME/.config/restic-android/env"
 SOURCE_DIR="/storage/emulated/0"
 EXCLUDE_FILE="$HOME/.config/restic-android/excludes"
@@ -72,6 +73,13 @@ ensure_schedule() {
             --storage-not-low true \
             --persisted true
     fi
+}
+
+ensure_flock() {
+    mkdir -p "$(dirname $LOCK_FILE)"
+    exec 4<>"$LOCK_FILE"
+    flock --nonblock 4 || (fatal "Failed to acquire lock: $LOCK_FILE"; exit 1)
+    msg "Acquired lock: $LOCK_FILE"
 }
 
 notify() {
@@ -150,6 +158,7 @@ restic() {
 
 main() {
     ensure_log_and_reexec "$@"
+    ensure_flock
     ensure_schedule
 
     if [ ! -r "$RESTIC_ENV_FILE" ]; then
