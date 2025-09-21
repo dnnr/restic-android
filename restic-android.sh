@@ -106,7 +106,7 @@ warn() {
         --priority low
 }
 
-err() {
+fatal() {
     msg "ERROR:" "$@"
     echo "Error:" "$@" | \
         notify 1 failure \
@@ -140,7 +140,7 @@ main() {
     ensure_schedule
 
     if [ ! -r "$RESTIC_ENV_FILE" ]; then
-        err "Restic environment file not found: $RESTIC_ENV_FILE"
+        fatal "Restic environment file not found: $RESTIC_ENV_FILE"
     fi
     set -a  # Marks modified/created variables for export
     . "$RESTIC_ENV_FILE"
@@ -174,7 +174,7 @@ main() {
     monitor_conditions "$restic_pid"
     wait "$restic_pid"
     if [ $? -ne 0 ]; then
-        err "Backup failed!"
+        fatal "Backup failed!"
     fi
     info "Backup finished successfully"
 }
