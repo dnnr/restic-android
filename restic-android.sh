@@ -140,16 +140,6 @@ cleanup() {
     termux-wake-unlock
 }
 
-register_exit_cleanup() {
-    trap "cleanup" EXIT
-    termux-wake-lock
-    notify progress \
-        --alert-once \
-        --ongoing \
-        --priority low \
-        --title "restic" \
-        --content "Running backup for ${HOSTNAME}"
-
 restic() {
     mkdir -p "$RESTIC_CACHE_DIR"
     export RESTIC_CACHE_DIR
@@ -160,6 +150,8 @@ main() {
     ensure_log_and_reexec "$@"
     ensure_flock
     ensure_schedule
+
+    trap "cleanup" INT TERM EXIT
 
     if [ ! -r "$RESTIC_ENV_FILE" ]; then
         fatal "Restic environment file not found: $RESTIC_ENV_FILE"
@@ -177,12 +169,12 @@ main() {
         exit 1
     fi
 
+    msg "Acquiring Android wake lock"
+    termux-wake-lock
+
     progress "Unlocking repository"
     restic unlock
 
-    register_exit_cleanup
-
-    termux-wake-lock
     progress "Running backup"
     restic backup --exclude-caches --exclude-file "$EXCLUDE_FILE" "$SOURCE_DIR" &
     local restic_pid=$!
