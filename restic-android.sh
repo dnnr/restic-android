@@ -80,7 +80,10 @@ notify() {
     shift
     local id="$1"
     shift
-    local -a args=("--group" "${TERMUX_NOTIFICATION_ID}" "--id" "$id")
+    local -a args=("--group" "${TERMUX_NOTIFICATION_ID}")
+    if [ -n "$id" ]; then
+        args+=("--id" "$id")
+    fi
 
     if termux-notification "${args[@]}" "$@"; then
         if [ "$persist" -eq 0 ]; then
@@ -101,7 +104,7 @@ info() {
 warn() {
     msg "WARN:" "$@"
     echo "Warning:" "$@" | \
-        notify 1 failure \
+        notify 1 "" \
         --title "restic" \
         --alert-once \
         --priority low
@@ -110,7 +113,7 @@ warn() {
 fatal() {
     msg "ERROR:" "$@"
     echo "Error:" "$@" | \
-        notify 1 failure \
+        notify 1 "" \
         --title "restic" \
         --alert-once \
         --priority high
