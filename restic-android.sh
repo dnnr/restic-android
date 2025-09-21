@@ -121,10 +121,10 @@ fatal() {
 }
 
 cleanup() {
-  for notification in "${TERMUX_NOTIFICATIONS[@]}"; do
-    termux-notification-remove "$notification"
-  done
-  termux-wake-unlock
+    for notification in "${TERMUX_NOTIFICATIONS[@]}"; do
+        termux-notification-remove "$notification"
+    done
+    termux-wake-unlock
 }
 
 register_exit_cleanup() {
