@@ -136,8 +136,12 @@ register_exit_cleanup() {
         --priority low \
         --title "restic" \
         --content "Running backup for ${HOSTNAME}"
-}
 
+restic() {
+    mkdir -p "$RESTIC_CACHE_DIR"
+    export RESTIC_CACHE_DIR
+    command restic "$@"
+}
 
 main() {
     ensure_log_and_reexec "$@"
@@ -159,8 +163,6 @@ main() {
         exit 1
     fi
 
-    mkdir -p "$RESTIC_CACHE_DIR"
-    export RESTIC_CACHE_DIR
     restic unlock
 
     register_exit_cleanup
