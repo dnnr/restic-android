@@ -94,6 +94,16 @@ info() {
     termux-toast -s "$*"
 }
 
+progress() {
+    msg "PROGRESS: " "$@"
+    echo "$@" | \
+        notify progress \
+        --title "restic" \
+        --alert-once \
+        --ongoing \
+        --priority low
+    }
+
 warn() {
     msg "WARN:" "$@"
     echo "Warning:" "$@" | \
@@ -158,18 +168,13 @@ main() {
         exit 1
     fi
 
+    progress "Unlocking repository"
     restic unlock
 
     register_exit_cleanup
 
     termux-wake-lock
-    notify progress \
-      --alert-once \
-      --ongoing \
-      --priority low \
-      --title "restic" \
-      --content "Running backup"
-
+    progress "Running backup"
     restic backup --exclude-caches --exclude-file "$EXCLUDE_FILE" "$SOURCE_DIR" &
     local restic_pid=$!
     monitor_conditions "$restic_pid"
