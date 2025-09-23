@@ -78,7 +78,7 @@ ensure_schedule() {
 ensure_flock() {
     mkdir -p "$(dirname $LOCK_FILE)"
     exec 4<>"$LOCK_FILE"
-    flock --nonblock 4 || (fatal "Failed to acquire lock: $LOCK_FILE"; exit 1)
+    flock --nonblock 4 || fatal "Failed to acquire lock: $LOCK_FILE"
     msg "Acquired lock: $LOCK_FILE"
 }
 
