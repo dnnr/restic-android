@@ -59,6 +59,7 @@ monitor_conditions() {
 }
 
 ensure_schedule() {
+    msg "Verifying job schedule"
     local exists
     exists=$(termux-job-scheduler -p 2>/dev/null | grep -F "Pending Job $JOB_ID" || true)
     if [ -z "$exists" ]; then
@@ -78,7 +79,7 @@ ensure_schedule() {
 ensure_flock() {
     mkdir -p "$(dirname $LOCK_FILE)"
     exec 4<>"$LOCK_FILE"
-    flock --nonblock 4 || fatal "Failed to acquire lock: $LOCK_FILE"
+    flock --nonblock 4 || fatal "Another backup is still running (failed to acquire lock: $LOCK_FILE)"
     msg "Acquired lock: $LOCK_FILE"
 }
 
