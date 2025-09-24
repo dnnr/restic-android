@@ -58,13 +58,22 @@ monitor_conditions() {
     done
 }
 
+termux_job_scheduler()
+{
+    timeout 60 termux-job-scheduler "$@"
+    if [ $? -eq 124 ]; then
+        msg "Call to termux-job-scheduler was most likely stuck and we killed it after a timeout (happens sometimes)"
+        return
+    fi
+}
+
 ensure_schedule() {
     msg "Verifying job schedule"
     local exists
-    exists=$(termux-job-scheduler -p 2>/dev/null | grep -F "Pending Job $JOB_ID" || true)
+    exists=$(termux_job_scheduler -p 2>/dev/null | grep -F "Pending Job $JOB_ID" || true)
     if [ -z "$exists" ]; then
         msg "Setting up periodic job"
-        termux-job-scheduler \
+        termux_job_scheduler \
             --job-id "$JOB_ID" \
             --period-ms 1800000 \
             --network unmetered \
