@@ -16,3 +16,8 @@ A Termux bash script for backing up your Android device with restic.
  3. Create custom `~/.config/restic-android/env` file based on `env.sample`
  4. Run `restic-android.sh` once to set up scheduled job
  5. Optional: Run termux-setup-storage to grant access to all shared storage
+
+## Acknowledgements
+
+ * Thanks to Clemens for the idea and helpful starting points in his [post on doing the same with
+   borgbackup](https://neverpanic.de/blog/2022/01/25/backing-up-your-android-phone-with-borgbackup/).
