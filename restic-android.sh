@@ -156,7 +156,7 @@ fatal() {
 
 # Register this before taking a wake lock and before posting progress notifications
 cleanup() {
-    # Clear progress notifications
+    msg "Clearing progress notifications"
     termux-notification-remove progress
 
     msg "Releasing Android wake lock"
