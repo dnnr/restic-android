@@ -96,7 +96,12 @@ ensure_schedule() {
 ensure_flock() {
     mkdir -p "$(dirname $LOCK_FILE)"
     exec 4<>"$LOCK_FILE"
-    flock --nonblock 4 || fatal "Another backup is still running (failed to acquire lock: $LOCK_FILE)"
+    # The scheduler is so wonky that it often starts us twice at the same time. So the flock failing
+    # is a pretty common occurrence, which is why we don't post a "fatal" notification for it.
+    if ! flock --nonblock 4; then
+        msg "Another backup is still running (failed to acquire lock: $LOCK_FILE)"
+        exit 1
+    fi
     msg "Acquired lock: $LOCK_FILE"
 }
 
