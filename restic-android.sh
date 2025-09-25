@@ -47,15 +47,19 @@ monitor_conditions() {
     local pid="$1"
     while kill -0 "$pid" 2>/dev/null; do
         sleep 15
+        local needs_killing=0
         if ! is_wifi_connected; then
             warn "Wi-Fi disconnected, aborting backup" >&2
-            kill "$pid"
-            wait "$pid" 2>/dev/null
-            exit 1
+            needs_killing=1
         fi
         if ! is_charging; then
             warn "Charger disconnected, aborting backup" >&2
+            needs_killing=1
+        fi
+        if [ $needs_killing -ne 0 ]; then
+            msg "Killing restic PID $pid"
             kill "$pid"
+            msg "Waiting for restic to quit"
             wait "$pid" 2>/dev/null
             exit 1
         fi
