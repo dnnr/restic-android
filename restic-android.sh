@@ -20,6 +20,10 @@ RESTIC_CACHE_DIR="$PREFIX/var/cache/restic"
 
 TERMUX_NOTIFICATION_GROUP="restic-${HOSTNAME}"
 
+# Always make sure cache dir exists and is used (otherwise performance will be bad, see https://github.com/restic/restic/issues/4775 )
+mkdir -p "$RESTIC_CACHE_DIR"
+export RESTIC_CACHE_DIR
+
 ensure_log_and_reexec() {
     mkdir -p "$LOG_DIR"
     if [ "${RESTIC_BACKUP_LOGGING:-}" != "1" ]; then
@@ -148,12 +152,6 @@ cleanup() {
 
     msg "Releasing Android wake lock"
     termux-wake-unlock
-}
-
-restic() {
-    mkdir -p "$RESTIC_CACHE_DIR"
-    export RESTIC_CACHE_DIR
-    command restic "$@"
 }
 
 main() {
