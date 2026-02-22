@@ -122,7 +122,6 @@ msg() {
 
 info() {
     msg "INFO:" "$@"
-    termux-toast -s "$*"
 }
 
 progress() {
@@ -186,6 +185,8 @@ main() {
         exit 1
     fi
 
+    termux-toast -s "Starting restic backup"
+
     msg "Acquiring Android wake lock"
     termux-wake-lock
 
@@ -200,7 +201,9 @@ main() {
     if [ $? -ne 0 ]; then
         fatal "Backup failed!"
     fi
+
     info "Backup finished successfully"
+    termux-toast -s "Restic backup finished successfully"
 }
 
 main "$@"
