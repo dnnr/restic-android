@@ -39,7 +39,7 @@ is_wifi_connected() {
     termux-wifi-connectioninfo | jq -e '.supplicant_state == "COMPLETED"' >/dev/null 2>&1
 }
 
-is_charging() {
+is_plugged_in() {
     termux-battery-status | jq -e '.plugged != "UNPLUGGED"' >/dev/null 2>&1
 }
 
@@ -52,7 +52,7 @@ monitor_conditions() {
             warn "Wi-Fi disconnected, aborting backup" >&2
             needs_killing=1
         fi
-        if ! is_charging; then
+        if ! is_plugged_in; then
             warn "Charger disconnected, aborting backup" >&2
             needs_killing=1
         fi
@@ -181,8 +181,8 @@ main() {
         exit 1
     fi
 
-    if ! is_charging; then
-        msg "Device not charging. Exiting."
+    if ! is_plugged_in; then
+        msg "Device not plugged in. Exiting."
         exit 1
     fi
 
