@@ -85,7 +85,6 @@ ensure_schedule() {
             --job-id "$JOB_ID" \
             --period-ms 1800000 \
             --network unmetered \
-            --charging true \
             --script "$SCRIPT_PATH" \
             --battery-not-low true \
             --storage-not-low true \
