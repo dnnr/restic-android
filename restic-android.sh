@@ -11,6 +11,7 @@ set -euo pipefail
 
 SCRIPT_PATH="$(realpath "$0")"
 JOB_ID=4242
+JOB_PERIOD_MS=3600000
 LOG_DIR="/storage/emulated/0/ResticLogs/"
 LOCK_FILE="$HOME/.local/share/restic-android/lock"
 RESTIC_ENV_FILE="$HOME/.config/restic-android/env"
@@ -83,7 +84,7 @@ ensure_schedule() {
         msg "Setting up periodic job"
         termux_job_scheduler \
             --job-id "$JOB_ID" \
-            --period-ms 1800000 \
+            --period-ms "$JOB_PERIOD_MS" \
             --network unmetered \
             --script "$SCRIPT_PATH" \
             --battery-not-low true \
